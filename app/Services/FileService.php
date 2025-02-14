@@ -118,6 +118,7 @@ class FileService
         $contr_text = app()->getLocale() == 'uz' ? 'Шартноманинг амал қилиш муддати' : 'Срок Договора';
         $duration_text = app()->getLocale() == 'uz' ? '(синов муддати 3 ой).' : '(с испытательным сроком на 3 месяца).';
         $duration_text2 = app()->getLocale() == 'uz' ? ' синов муддати 3 ой,' : 'с испытательным сроком на 3 месяца';
+        $intern_duration = null;
 
         if (isset($data['app_id'])) {
             $app = Application::with(['app_user', 'form.personal_data'])->find($data['app_id']);
@@ -168,10 +169,8 @@ class FileService
         $temp->setValue('current_date_ymd', Carbon::now()->format('d.m.Y'));
         $temp->setValue('trudovoy_director', $trudovoy_director);
         $temp->setValue('contract_text', $contr_text);
-        $temp->setValue('duration_text', $intern_duration ?? null == 0 ? $duration_text : '');
-        $temp->setValue('duration_text2', $intern_duration ?? null == 0 ? $duration_text2 : '');
-        $temp->setValue('duration_text', $duration_text);
-        $temp->setValue('duration_text2', $duration_text2);
+        $temp->setValue('duration_text', $intern_duration == 0 ? $duration_text : '');
+        $temp->setValue('duration_text2', $intern_duration == 0 ? $duration_text2 : '');
         $temp->saveAs($download_file_path . $data['fio'] . '.docx');
 
         return response()->download($download_file_path . $data['fio'] . '.docx');
